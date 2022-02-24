@@ -45,10 +45,15 @@ void loop() {
   LMotor.writeMicroseconds(MIN_PULSE_LENGTH);
   RMotor.writeMicroseconds(MAX_PULSE_LENGTH);
   RMotor.writeMicroseconds(MIN_PULSE_LENGTH);
+  //Calibrating ESCs
+
+
 
   throttleVal = tCH.getValue();
   throttleVal = throttleVal - 1000;
   throttleVal = map(throttleVal, 1000, 2000, 0, 180);
+
+  //Getting and mapping throttle level
 
   directionVal = map(dCH.getValue(), 1192, 1700, 0, 180);
   if (directionVal < 5) {
@@ -57,6 +62,8 @@ void loop() {
   if (directionVal > 175) {
     directionVal = 180;
   }
+
+  //Getting roll value and mapping
 
   if (directionVal < 85) {
     LMotorVal = throttleVal - (multiplier * (90 - directionVal));
@@ -71,8 +78,13 @@ void loop() {
     RMotorVal = throttleVal;
   }
 
-LMotor.write(LMotorVal);
-RMotor.write(RMotorVal);
+  //Combining throttle level and directional values for differential
+
+  LMotor.write(LMotorVal);
+  RMotor.write(RMotorVal);
+
+//Sending motors power
+  
   elevatorVal = map(eCH.getValue(), 1192, 1700, 0, 180);
   if (elevatorVal < 5) {
     elevatorVal = 0;
@@ -81,7 +93,13 @@ RMotor.write(RMotorVal);
     elevatorVal = 180;
   }
 
-  //Serial.println(elevatorVal);
+//Getting and mapping elevator value and getting rid of dead space
+  
+  Serial.println(elevatorVal);
+  if (elevatorVal > 88 && elevatorVal < 93) {
+    elevatorVal = 90;
+  }
+
   elevator.write(elevatorVal);
 
 
